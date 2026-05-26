@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Entity representing a Company that publishes job offers.
+ * Entity representing a Company that employs Recruiters.
  */
 @Entity
 @Table(name = "companies")
@@ -39,11 +39,6 @@ public class Company {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<RecruiterProfile> employees = new ArrayList<>();
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<JobOffer> offers = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

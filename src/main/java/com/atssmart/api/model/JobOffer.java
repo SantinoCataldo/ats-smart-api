@@ -13,6 +13,7 @@ import java.util.Set;
 
 /**
  * Entity representing a Job Offer published in the job board.
+ * A Job Offer is published and managed by a Recruiter (implicitly linking it to a Company).
  */
 @Entity
 @Table(name = "job_offers")
@@ -24,12 +25,6 @@ public class JobOffer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Company company;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recruiter_id", nullable = false)

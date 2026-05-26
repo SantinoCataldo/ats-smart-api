@@ -39,7 +39,7 @@ Este documento detalla los Requisitos Funcionales (RF) y Requisitos No Funcional
 
 * **RF14 — ABM de Ofertas**: El sistema debe permitir al reclutador realizar el ABM (Alta, Baja, Modificación) de ofertas laborales para la empresa a la que pertenece.
 * **RF15 — Campos de la Oferta**: El sistema debe almacenar para cada oferta laboral su título, descripción del puesto, sector laboral, ubicación, modalidad de trabajo, salario estimado, estado y fecha de publicación.
-* **RF16 — Vinculación Organizacional**: El sistema debe vincular de forma obligatoria cada oferta laboral al identificador del reclutador responsable (`reclutador_id`) y a la empresa emisora (`empresa_id`).
+* **RF16 — Vinculación Organizacional**: El sistema debe vincular de forma obligatoria cada oferta laboral al identificador del reclutador responsable (`reclutador_id`), quedando asociada de forma implícita a la empresa de dicho reclutador.
 * **RF17 — Ciclo de Vida de la Oferta**: El sistema debe permitir al reclutador gestionar el estado de actividad de la oferta laboral (`ACTIVA`, `INACTIVA`, `FINALIZADA`).
 * **RF18 — Habilidades Requeridas**: El sistema debe permitir al reclutador asociar múltiples habilidades del catálogo (`Skills`) requeridas para cada oferta laboral.
 * **RF19 — Búsqueda y Filtros de Ofertas**: El sistema debe permitir a los postulantes listar y buscar ofertas laborales vigentes, filtrando por título descriptivo, habilidades requeridas, ubicación, modalidad (`PRESENCIAL`, `REMOTO`, `HIBRIDO`) o sector laboral.

@@ -14,7 +14,6 @@ erDiagram
     USUARIO ||--o| PERFIL_RECLUTADOR : "tiene"
     
     EMPRESA ||--o{ PERFIL_RECLUTADOR : "emplea"
-    EMPRESA ||--o{ OFERTA_LABORAL : "publica"
     
     PERFIL_POSTULANTE ||--o{ POSTULACION : "realiza"
     PERFIL_POSTULANTE }o--o{ SKILL : "posee"
@@ -61,7 +60,6 @@ erDiagram
 
     OFERTA_LABORAL {
         Long id PK
-        Long empresa_id FK
         Long reclutador_id FK
         String titulo
         String descripcion
