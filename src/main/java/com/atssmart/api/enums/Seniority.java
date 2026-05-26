@@ -1,10 +1,10 @@
 package com.atssmart.api.enums;
 
 /**
- * Enums representing the seniority level of a user.
+ * Enums representing the seniority level of a candidate.
  */
 public enum Seniority {
     JUNIOR,
-    SEMISENIOR,
+    MID_LEVEL,
     SENIOR
 }

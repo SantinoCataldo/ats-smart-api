@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * Entity representing a Technical Skill required for job offers or possessed by users.
+ * Entity representing a generic Skill required for job offers or possessed by candidates.
  */
 @Entity
 @Table(name = "skills")

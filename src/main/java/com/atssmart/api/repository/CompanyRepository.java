@@ -1,12 +1,12 @@
 package com.atssmart.api.repository;
 
-import com.atssmart.api.model.User;
+import com.atssmart.api.model.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Spring Data JPA Repository for the User entity.
+ * Spring Data JPA Repository for the Company entity.
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface CompanyRepository extends JpaRepository<Company, Long> {
 }

@@ -8,10 +8,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Entity representing a Candidate's Application (Postulación) to a Job Offer.
+ * Entity representing a Candidate's Application to a Job Offer.
  */
 @Entity
-@Table(name = "postulacion")
+@Table(name = "job_applications")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,13 +22,13 @@ public class JobApplication {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "candidate_profile_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private User applicant;
+    private CandidateProfile applicant;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oferta_id", nullable = false)
+    @JoinColumn(name = "job_offer_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private JobOffer jobOffer;
@@ -36,21 +36,20 @@ public class JobApplication {
     @Column(name = "match_score")
     private Integer matchScore;
 
-    @Column(name = "feedback_ia", columnDefinition = "TEXT")
+    @Column(name = "ai_feedback", columnDefinition = "TEXT")
     private String aiFeedback;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado_proceso", nullable = false, length = 30)
-    private ApplicationStatus processStatus;
+    @Column(name = "status", nullable = false, length = 30)
+    private ApplicationStatus status;
 
-    @Column(name = "fecha_postulacion", nullable = false)
+    @Column(name = "applied_at", nullable = false)
     private LocalDateTime appliedAt;
 
-    // AI identifies missing skills for this application (postulacion_skill_faltante)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-        name = "postulacion_skill_faltante",
-        joinColumns = @JoinColumn(name = "postulacion_id"),
+        name = "job_application_missing_skill",
+        joinColumns = @JoinColumn(name = "job_application_id"),
         inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     @ToString.Exclude

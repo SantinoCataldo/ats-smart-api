@@ -1,6 +1,7 @@
 package com.atssmart.api.model;
 
 import com.atssmart.api.enums.JobOfferStatus;
+import com.atssmart.api.enums.JobOfferModality;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -11,10 +12,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Entity representing a Job Offer published in the ATS system.
+ * Entity representing a Job Offer published in the job board.
  */
 @Entity
-@Table(name = "oferta_laboral")
+@Table(name = "job_offers")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,39 +25,53 @@ public class JobOffer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "titulo", nullable = false, length = 150)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Company company;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recruiter_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private RecruiterProfile recruiter;
+
+    @Column(name = "title", nullable = false, length = 150)
     private String title;
 
-    @Column(name = "descripcion", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "salario_estimado", precision = 12, scale = 2)
+    @Column(name = "sector", length = 100)
+    private String sector;
+
+    @Column(name = "location", length = 150)
+    private String location;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "modality", length = 30)
+    private JobOfferModality modality;
+
+    @Column(name = "estimated_salary", precision = 12, scale = 2)
     private BigDecimal estimatedSalary;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado", nullable = false, length = 30)
+    @Column(name = "status", nullable = false, length = 30)
     private JobOfferStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reclutador_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private User recruiter;
-
-    @Column(name = "fecha_publicacion", nullable = false, updatable = false)
+    @Column(name = "published_at", nullable = false, updatable = false)
     private LocalDateTime publishedAt;
 
-    // A job offer receives applications
     @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<JobApplication> applications = new ArrayList<>();
 
-    // A job offer requires skills (oferta_laboral_skill)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-        name = "oferta_laboral_skill",
-        joinColumns = @JoinColumn(name = "oferta_laboral_id"),
+        name = "job_offer_skill",
+        joinColumns = @JoinColumn(name = "job_offer_id"),
         inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     @ToString.Exclude
