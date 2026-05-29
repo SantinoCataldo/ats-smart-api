@@ -26,7 +26,7 @@ public class CandidateProfile {
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private User user;
+    private UserEntity userEntity;
 
     @Column(name = "full_name", nullable = false, length = 150)
     private String fullName;
