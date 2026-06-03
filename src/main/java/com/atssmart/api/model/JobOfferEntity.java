@@ -20,7 +20,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobOffer {
+public class JobOfferEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class JobOffer {
     @JoinColumn(name = "recruiter_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private RecruiterProfile recruiter;
+    private RecruiterProfileEntity recruiter;
 
     @Column(name = "title", nullable = false, length = 150)
     private String title;
@@ -61,7 +61,7 @@ public class JobOffer {
     @OneToMany(mappedBy = "jobOffer", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<JobApplication> applications = new ArrayList<>();
+    private List<JobApplicationEntity> applications = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -71,7 +71,7 @@ public class JobOffer {
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<Skill> requiredSkills = new HashSet<>();
+    private Set<SkillEntity> requiredSkills = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {

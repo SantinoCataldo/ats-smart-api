@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecruiterProfile {
+public class RecruiterProfileEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,10 +35,10 @@ public class RecruiterProfile {
     @JoinColumn(name = "company_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Company company;
+    private CompanyEntity company;
 
     @OneToMany(mappedBy = "recruiter", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<JobOffer> offers = new ArrayList<>();
+    private List<JobOfferEntity> offers = new ArrayList<>();
 }

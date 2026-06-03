@@ -15,7 +15,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobApplication {
+public class JobApplicationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +25,13 @@ public class JobApplication {
     @JoinColumn(name = "candidate_profile_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private CandidateProfile applicant;
+    private CandidateProfileEntity applicant;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_offer_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private JobOffer jobOffer;
+    private JobOfferEntity jobOffer;
 
     @Column(name = "match_score")
     private Integer matchScore;
@@ -54,7 +54,7 @@ public class JobApplication {
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<Skill> missingSkills = new HashSet<>();
+    private Set<SkillEntity> missingSkills = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {

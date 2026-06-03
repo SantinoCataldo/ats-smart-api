@@ -39,12 +39,12 @@ public class UserEntity {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private CandidateProfile candidateProfile;
+    private CandidateProfileEntity candidateProfile;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private RecruiterProfile recruiterProfile;
+    private RecruiterProfileEntity recruiterProfile;
 
     @PrePersist
     protected void onCreate() {

@@ -5,7 +5,7 @@ import com.atssmart.api.dto.response.SkillResponse;
 import com.atssmart.api.enums.SkillCategory;
 import com.atssmart.api.exception.ResourceNotFoundException;
 import com.atssmart.api.mapper.SkillMapper;
-import com.atssmart.api.model.Skill;
+import com.atssmart.api.model.SkillEntity;
 import com.atssmart.api.repository.SkillRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,15 +32,15 @@ public class SkillServiceImpl implements SkillService {
         if (skillRepository.existsByNameIgnoreCase(request.getName())) {
             throw new IllegalArgumentException("Ya existe una habilidad con el nombre: " + request.getName());
         }
-        Skill skill = skillMapper.toEntity(request);
-        Skill saved = skillRepository.save(skill);
+        SkillEntity skill = skillMapper.toEntity(request);
+        SkillEntity saved = skillRepository.save(skill);
         return skillMapper.toResponse(saved);
     }
 
     @Override
     @Transactional(readOnly = true)
     public SkillResponse getById(Long id) {
-        Skill skill = skillRepository.findById(id)
+        SkillEntity skill = skillRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Skill", "id", id));
         return skillMapper.toResponse(skill);
     }
@@ -64,7 +64,7 @@ public class SkillServiceImpl implements SkillService {
     @Override
     @Transactional
     public SkillResponse update(Long id, SkillRequest request) {
-        Skill skill = skillRepository.findById(id)
+        SkillEntity skill = skillRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Skill", "id", id));
 
         if (!skill.getName().equalsIgnoreCase(request.getName())
@@ -74,7 +74,7 @@ public class SkillServiceImpl implements SkillService {
 
         skill.setName(request.getName());
         skill.setCategory(request.getCategory());
-        Skill updated = skillRepository.save(skill);
+        SkillEntity updated = skillRepository.save(skill);
         return skillMapper.toResponse(updated);
     }
 

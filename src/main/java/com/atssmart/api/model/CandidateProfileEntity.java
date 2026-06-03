@@ -16,7 +16,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CandidateProfile {
+public class CandidateProfileEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,10 +46,10 @@ public class CandidateProfile {
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<Skill> skills = new HashSet<>();
+    private Set<SkillEntity> skills = new HashSet<>();
 
     @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<JobApplication> applications = new ArrayList<>();
+    private List<JobApplicationEntity> applications = new ArrayList<>();
 }
