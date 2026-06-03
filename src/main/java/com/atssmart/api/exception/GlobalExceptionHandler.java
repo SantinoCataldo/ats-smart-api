@@ -46,6 +46,19 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles business-logic validation exceptions (e.g. duplicate name).
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
      * Catch-all handler for any other unhandled server-side exceptions.
      */
     @ExceptionHandler(Exception.class)
