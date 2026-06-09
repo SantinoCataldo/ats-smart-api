@@ -5,4 +5,5 @@ package com.atssmart.api.dto.request;
  * Skeleton left empty for group implementation.
  */
 public class CompanyRequest {
+
 }
