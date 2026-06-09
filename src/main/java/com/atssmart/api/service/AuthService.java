@@ -1,6 +1,6 @@
 package com.atssmart.api.service;
 
-import com.atssmart.api.dto.request.AuthRequestDTO;
+import com.atssmart.api.dto.request.AuthRequest;
 import com.atssmart.api.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +19,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    public UserDetails authenticate(AuthRequestDTO input) {
+    public UserDetails authenticate(AuthRequest input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
