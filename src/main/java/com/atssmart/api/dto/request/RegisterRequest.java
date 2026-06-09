@@ -3,7 +3,7 @@ package com.atssmart.api.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record RegisterRequestDTO(
+public record RegisterRequest(
         @NotBlank(message = "El email es obligatorio")
         String email,
 

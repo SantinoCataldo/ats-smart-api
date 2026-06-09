@@ -4,12 +4,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthRequestDTO {
+public class AuthRequest {
     @NotNull(message = "El email debe ser obligatorio")
     private String email;
 
