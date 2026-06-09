@@ -45,8 +45,7 @@ public class AuthService {
 
         userRepository.save(newUser);
 
-        // 3. Cargar los detalles usando el email
-        // Nota: Tu UserDetailServiceImpl también deberá estar adaptado para buscar por email
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(newUser.getEmail());
         String jwt = jwtService.generateToken(userDetails);
 
