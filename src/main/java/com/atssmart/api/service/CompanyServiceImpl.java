@@ -26,8 +26,8 @@ public class CompanyServiceImpl {
 
     @Transactional
     public CompanyResponse create(CompanyRequest request) {
-        if (companyRepository.existsByNameIgnoreCase(request.get)) {
-            throw new IllegalArgumentException("Ya existe una habilidad con el nombre: " + request.getName());
+            if (companyRepository.existsByNameIgnoreCase(request.getName())) {
+            throw new IllegalArgumentException("Ya existe una compania con el nombre: " + request.getName());
         }
         CompanyEntity company = companyMapper.toEntity(request);
         CompanyEntity saved = companyRepository.save(company);
