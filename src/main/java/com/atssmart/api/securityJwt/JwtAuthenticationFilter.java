@@ -1,6 +1,5 @@
 package com.atssmart.api.securityJwt;
 
-import com.atssmart.api.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

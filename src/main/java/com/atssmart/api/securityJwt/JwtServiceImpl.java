@@ -1,4 +1,4 @@
-package com.atssmart.api.service;
+package com.atssmart.api.securityJwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

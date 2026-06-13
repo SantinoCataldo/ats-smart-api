@@ -1,4 +1,4 @@
-package com.atssmart.api.service;
+package com.atssmart.api.securityJwt;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
