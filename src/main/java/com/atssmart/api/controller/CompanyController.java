@@ -25,4 +25,10 @@ public class CompanyController {
     public ResponseEntity<CompanyResponse> create(@Valid @RequestBody CompanyRequest request){
         return new ResponseEntity<>(companyService.create(request),HttpStatus.CREATED);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CompanyResponse> update(@PathVariable Long id, @Valid @RequestBody CompanyRequest request){
+        return new ResponseEntity<>(companyService.update(id,request),HttpStatus.OK);
+    }
 }
+

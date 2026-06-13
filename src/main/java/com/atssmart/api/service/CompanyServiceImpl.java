@@ -4,6 +4,7 @@ import com.atssmart.api.dto.request.CompanyRequest;
 import com.atssmart.api.dto.request.SkillRequest;
 import com.atssmart.api.dto.response.CompanyResponse;
 import com.atssmart.api.dto.response.SkillResponse;
+import com.atssmart.api.exception.ResourceNotFoundException;
 import com.atssmart.api.mapper.CompanyMapper;
 import com.atssmart.api.mapper.SkillMapper;
 import com.atssmart.api.model.CompanyEntity;
@@ -32,5 +33,23 @@ public class CompanyServiceImpl {
         CompanyEntity company = companyMapper.toEntity(request);
         CompanyEntity saved = companyRepository.save(company);
         return companyMapper.toResponse(saved);
+    }
+
+    public CompanyResponse update(Long id , CompanyRequest request){
+        CompanyEntity company = companyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Company", "id", id));
+
+        if (!company.getName().equalsIgnoreCase(request.getName())
+                && companyRepository.existsByNameIgnoreCase(request.getName())) {
+            throw new IllegalArgumentException("Ya existe una compania con el nombre: " + request.getName());
+        }
+
+        company.setName(request.getName());
+        company.setDescription(request.getDescription());
+        company.setWebsite(request.getWebsite());
+        company.setLogoUrl(request.getLogoUrl());
+
+        CompanyEntity update = companyRepository.save(company);
+        return companyMapper.toResponse(update);
     }
 }
