@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.naming.CompositeName;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -51,5 +52,14 @@ public class CompanyServiceImpl {
 
         CompanyEntity update = companyRepository.save(company);
         return companyMapper.toResponse(update);
+    }
+
+    public List<CompanyResponse> getAll(){
+        return companyRepository.findAll().stream().map(companyMapper::toResponse).toList();
+    }
+
+    public CompanyResponse getById(Long id){
+        CompanyEntity company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company", "id", id));
+        return companyMapper.toResponse(company);
     }
 }

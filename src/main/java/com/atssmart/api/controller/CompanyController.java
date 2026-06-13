@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * REST Controller for Company resource management.
  * Skeleton left empty for group implementation.
@@ -29,6 +31,16 @@ public class CompanyController {
     @PutMapping("/{id}")
     public ResponseEntity<CompanyResponse> update(@PathVariable Long id, @Valid @RequestBody CompanyRequest request){
         return new ResponseEntity<>(companyService.update(id,request),HttpStatus.OK);
+    }
+
+    @GetMapping("{/{id}")
+    public ResponseEntity<CompanyResponse> getById(@PathVariable Long id){
+        return new ResponseEntity<>(companyService.getById(id),HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CompanyResponse>> getAll(){
+        return new ResponseEntity<>(companyService.getAll(),HttpStatus.OK);
     }
 }
 
