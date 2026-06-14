@@ -3,7 +3,7 @@ package com.atssmart.api.controller;
 import com.atssmart.api.dto.request.AuthRequest;
 import com.atssmart.api.dto.response.AuthResponse;
 import com.atssmart.api.service.AuthService;
-import com.atssmart.api.service.JwtService;
+import com.atssmart.api.securityJwt.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
