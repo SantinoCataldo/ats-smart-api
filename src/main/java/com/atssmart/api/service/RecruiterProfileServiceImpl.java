@@ -19,12 +19,13 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RecruiterProfileServiceImpl {
+public class RecruiterProfileServiceImpl implements RecruiterProfileService{
     private final RecruiterProfileRepository recruiterProfileRepository;
     private final RecruiterProfileMapper recruiterProfileMapper;
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
 
+    @Override
     @Transactional
     public RecruiterProfileResponse create(RecruiterProfileRequest request){
         if (recruiterProfileRepository.existsByUserEntityId(request.getUserId())) {
@@ -46,6 +47,7 @@ public class RecruiterProfileServiceImpl {
         return recruiterProfileMapper.toResponse(recruiterProfileRepository.save(recruiter));
     }
 
+    @Override
     @Transactional
     public RecruiterProfileResponse update(Long id,RecruiterProfileRequest request){
         RecruiterProfileEntity recruiter = recruiterProfileRepository.findById(id)
@@ -64,11 +66,13 @@ public class RecruiterProfileServiceImpl {
         return recruiterProfileMapper.toResponse(updated);
     }
 
+    @Override
     @Transactional
     public List<RecruiterProfileResponse> getAll(){
         return recruiterProfileRepository.findAll().stream().map(recruiterProfileMapper::toResponse).toList();
     }
 
+    @Override
     @Transactional
     public RecruiterProfileResponse getById(Long id){
         RecruiterProfileEntity recruiter = recruiterProfileRepository.findById(id)
@@ -77,6 +81,7 @@ public class RecruiterProfileServiceImpl {
         return recruiterProfileMapper.toResponse(recruiter);
     }
 
+    @Override
     @Transactional
     public void delete(Long id) {
         if (!recruiterProfileRepository.existsById(id)) {

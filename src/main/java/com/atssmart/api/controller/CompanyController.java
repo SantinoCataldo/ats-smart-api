@@ -4,6 +4,7 @@ import com.atssmart.api.dto.request.CompanyRequest;
 import com.atssmart.api.dto.request.SkillRequest;
 import com.atssmart.api.dto.response.CompanyResponse;
 import com.atssmart.api.dto.response.SkillResponse;
+import com.atssmart.api.service.CompanyService;
 import com.atssmart.api.service.CompanyServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/companies")
 public class CompanyController {
-    private final CompanyServiceImpl companyService;
+    private final CompanyService companyService;
 
     @PostMapping
     public ResponseEntity<CompanyResponse> create(@Valid @RequestBody CompanyRequest request){

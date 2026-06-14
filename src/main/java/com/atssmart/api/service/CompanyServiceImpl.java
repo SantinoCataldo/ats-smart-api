@@ -21,7 +21,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
-public class CompanyServiceImpl {
+public class CompanyServiceImpl implements CompanyService{
 
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
@@ -36,6 +36,8 @@ public class CompanyServiceImpl {
         return companyMapper.toResponse(saved);
     }
 
+    @Override
+    @Transactional
     public CompanyResponse update(Long id , CompanyRequest request){
         CompanyEntity company = companyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Company", "id", id));
@@ -54,12 +56,25 @@ public class CompanyServiceImpl {
         return companyMapper.toResponse(update);
     }
 
+    @Override
+    @Transactional
     public List<CompanyResponse> getAll(){
         return companyRepository.findAll().stream().map(companyMapper::toResponse).toList();
     }
 
+    @Override
+    @Transactional
     public CompanyResponse getById(Long id){
         CompanyEntity company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company", "id", id));
         return companyMapper.toResponse(company);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        if (!companyRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Recruiter", "id", id);
+        }
+        companyRepository.deleteById(id);
     }
 }

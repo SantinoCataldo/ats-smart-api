@@ -2,6 +2,7 @@ package com.atssmart.api.controller;
 
 import com.atssmart.api.dto.request.RecruiterProfileRequest;
 import com.atssmart.api.dto.response.RecruiterProfileResponse;
+import com.atssmart.api.service.RecruiterProfileService;
 import com.atssmart.api.service.RecruiterProfileServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/recruiter-profiles")
 public class RecruiterProfileController {
-    private final RecruiterProfileServiceImpl recruiterProfileService;
+    private final RecruiterProfileService recruiterProfileService;
 
     @PostMapping
     public ResponseEntity<RecruiterProfileResponse> create(@Valid @RequestBody RecruiterProfileRequest request){
