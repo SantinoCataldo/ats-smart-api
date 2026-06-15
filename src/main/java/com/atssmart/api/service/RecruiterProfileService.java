@@ -11,4 +11,6 @@ public interface RecruiterProfileService {
     List<RecruiterProfileResponse> getAll();
     RecruiterProfileResponse update(Long id, RecruiterProfileRequest request);
     void delete(Long id);
+    RecruiterProfileResponse getProfile(String email);
+    RecruiterProfileResponse updateProfile(RecruiterProfileRequest request, String email);
 }

@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import java.security.Principal;
 
 import java.util.List;
 
@@ -64,5 +66,21 @@ public class RecruiterProfileController {
     @GetMapping("/{id}")
     public ResponseEntity<RecruiterProfileResponse> getById(@Parameter(description = "ID del perfil de reclutador") @PathVariable Long id){
         return new ResponseEntity<>(recruiterProfileService.getById(id), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Obtener mi perfil de reclutador", description = "Devuelve el perfil del reclutador autenticado.")
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('RECRUITER')")
+    public ResponseEntity<RecruiterProfileResponse> getMyProfile(Principal principal) {
+        return ResponseEntity.ok(recruiterProfileService.getProfile(principal.getName()));
+    }
+
+    @Operation(summary = "Actualizar mi perfil de reclutador", description = "Permite al reclutador modificar sus datos de perfil y asociar su empresa.")
+    @PutMapping("/me")
+    @PreAuthorize("hasRole('RECRUITER')")
+    public ResponseEntity<RecruiterProfileResponse> updateMyProfile(
+            @Valid @RequestBody RecruiterProfileRequest request,
+            Principal principal) {
+        return ResponseEntity.ok(recruiterProfileService.updateProfile(request, principal.getName()));
     }
 }

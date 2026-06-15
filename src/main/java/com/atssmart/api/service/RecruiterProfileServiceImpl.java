@@ -89,4 +89,28 @@ public class RecruiterProfileServiceImpl implements RecruiterProfileService{
         }
         recruiterProfileRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public RecruiterProfileResponse getProfile(String email) {
+        RecruiterProfileEntity recruiter = recruiterProfileRepository.findByUserEntityEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Recruiter", "email", email));
+        return recruiterProfileMapper.toResponse(recruiter);
+    }
+
+    @Override
+    @Transactional
+    public RecruiterProfileResponse updateProfile(RecruiterProfileRequest request, String email) {
+        RecruiterProfileEntity recruiter = recruiterProfileRepository.findByUserEntityEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Recruiter", "email", email));
+
+        CompanyEntity company = companyRepository.findById(request.getCompanyId())
+                .orElseThrow(() -> new ResourceNotFoundException("Company", "id", request.getCompanyId()));
+
+        recruiter.setFullName(request.getFullName());
+        recruiter.setCompanyRole(request.getCompanyRole());
+        recruiter.setCompany(company);
+
+        return recruiterProfileMapper.toResponse(recruiterProfileRepository.save(recruiter));
+    }
 }
