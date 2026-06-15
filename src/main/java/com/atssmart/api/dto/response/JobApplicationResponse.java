@@ -21,4 +21,5 @@ public class JobApplicationResponse {
     private String aiFeedback;
     private String status;
     private LocalDateTime appliedAt;
+    private String cvLink;
 }

@@ -95,4 +95,41 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
         return jobAplications.stream().map(jobApplicationMapper::toResponse).toList();
     }
+
+    @Override
+    @Transactional
+    public JobApplicationResponse uploadCv(Long id, org.springframework.web.multipart.MultipartFile file, String email) {
+        JobApplicationEntity application = jobApplicationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Postulación", "id", id));
+
+        if (!application.getApplicant().getUserEntity().getEmail().equalsIgnoreCase(email)) {
+            throw new IllegalArgumentException("No tienes permiso para modificar esta postulación");
+        }
+
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("El archivo está vacío");
+        }
+        if (!"application/pdf".equals(file.getContentType())) {
+            throw new IllegalArgumentException("El archivo debe ser un PDF");
+        }
+
+        try {
+            String uploadDir = "uploads/cvs/";
+            java.io.File directory = new java.io.File(uploadDir).getAbsoluteFile();
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            String fileName = "cv_application_" + application.getId() + ".pdf";
+            java.io.File dest = new java.io.File(directory, fileName);
+            java.nio.file.Files.copy(file.getInputStream(), dest.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+            String filePath = uploadDir + fileName;
+            application.setCvLink(filePath);
+            JobApplicationEntity saved = jobApplicationRepository.save(application);
+            return jobApplicationMapper.toResponse(saved);
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Error al guardar el archivo PDF: " + e.getMessage(), e);
+        }
+    }
 }

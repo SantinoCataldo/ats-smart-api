@@ -24,7 +24,8 @@ public class JobApplicationMapper {
                 entity.getMatchScore(),
                 entity.getAiFeedback(),
                 entity.getStatus() != null ? entity.getStatus().name() : null,
-                entity.getAppliedAt()
+                entity.getAppliedAt(),
+                entity.getCvLink()
         );
     }
 }

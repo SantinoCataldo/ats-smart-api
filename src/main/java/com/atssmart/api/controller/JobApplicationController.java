@@ -64,4 +64,13 @@ public class JobApplicationController {
     public ResponseEntity<JobApplicationResponse> analyzeDifference(@PathVariable Long id) {
         return new ResponseEntity<>(analysisService.analizeDifference(id), HttpStatus.OK);
     }
+
+    @PostMapping("/{id}/upload-cv")
+    public ResponseEntity<JobApplicationResponse> uploadCv(
+            @PathVariable Long id,
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+            Principal principal) {
+        JobApplicationResponse response = jobApplicationService.uploadCv(id, file, principal.getName());
+        return ResponseEntity.ok(response);
+    }
 }

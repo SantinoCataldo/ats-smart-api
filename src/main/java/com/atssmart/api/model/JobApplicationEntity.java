@@ -56,6 +56,9 @@ public class JobApplicationEntity {
     @EqualsAndHashCode.Exclude
     private Set<SkillEntity> missingSkills = new HashSet<>();
 
+    @Column(name = "cv_link", length = 255)
+    private String cvLink;
+
     @PrePersist
     protected void onCreate() {
         if (this.appliedAt == null) {
