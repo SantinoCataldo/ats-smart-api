@@ -1,22 +1,16 @@
 package com.atssmart.api.service;
 
-import com.atssmart.api.dto.request.RecruiterProfileRequest;
-import com.atssmart.api.dto.request.SkillRequest;
+
 import com.atssmart.api.dto.request.UserRequest;
-import com.atssmart.api.dto.response.CompanyResponse;
-import com.atssmart.api.dto.response.RecruiterProfileResponse;
-import com.atssmart.api.dto.response.SkillResponse;
 import com.atssmart.api.dto.response.UserResponse;
 import com.atssmart.api.exception.ResourceNotFoundException;
 import com.atssmart.api.mapper.UserMapper;
-import com.atssmart.api.model.CompanyEntity;
-import com.atssmart.api.model.RecruiterProfileEntity;
-import com.atssmart.api.model.SkillEntity;
 import com.atssmart.api.model.UserEntity;
 import com.atssmart.api.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -25,6 +19,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Transactional
@@ -36,8 +31,8 @@ public class UserServiceImpl implements UserService {
 
         UserEntity user = new UserEntity();
         user.setEmail(request.getEmail());
-        // Revisar
-        //user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole());
 
         return userMapper.toResponse(userRepository.save(user));
@@ -53,8 +48,8 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setEmail(request.getEmail());
-        // Revisar
-        // user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole());
 
         UserEntity updated = userRepository.save(user);
