@@ -1,74 +1,83 @@
 package com.atssmart.api.controller;
 
-import com.atssmart.api.service.AnalysisService;
-import org.springframework.web.bind.annotation.*;
-
 import com.atssmart.api.dto.request.JobApplicationRequest;
 import com.atssmart.api.dto.response.JobApplicationResponse;
 import com.atssmart.api.enums.ApplicationStatus;
+import com.atssmart.api.service.AnalysisService;
 import com.atssmart.api.service.JobApplicationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
-/**
- * REST Controller for JobApplication resource management.
- */
 @RestController
 @RequestMapping("/api/job-applications")
 @RequiredArgsConstructor
+@Tag(name = "Postulaciones", description = "Endpoints para aplicar a ofertas, subir currículums y disparar el análisis con Inteligencia Artificial")
 public class JobApplicationController {
 
     private final JobApplicationService jobApplicationService;
     private final AnalysisService analysisService;
 
+    @Operation(summary = "Aplicar a oferta", description = "Genera una nueva postulación para el candidato autenticado hacia una oferta específica.")
     @PostMapping
     public ResponseEntity<JobApplicationResponse> apply(
             @Valid @RequestBody JobApplicationRequest request,
             Principal principal) {
-        String userEmail = principal.getName();
-        JobApplicationResponse response = jobApplicationService.apply(request, userEmail);
+        JobApplicationResponse response = jobApplicationService.apply(request, principal.getName());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Actualizar estado de postulación", description = "Cambia el estado de una postulación (Ej. de PENDIENTE a EN_REVISION).")
     @PutMapping("/{id}/status")
     public ResponseEntity<JobApplicationResponse> updateStatus(
-            @PathVariable Long id,
-            @RequestParam ApplicationStatus status) {
+            @Parameter(description = "ID de la postulación") @PathVariable Long id,
+            @Parameter(description = "Nuevo estado de la aplicación") @RequestParam ApplicationStatus status) {
         JobApplicationResponse response = jobApplicationService.updateStatus(id, status);
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Mis postulaciones", description = "Devuelve el historial de todas las aplicaciones realizadas por el candidato autenticado.")
     @GetMapping("/my-applications")
     public ResponseEntity<List<JobApplicationResponse>> getMyApplications(Principal principal) {
-        String userEmail = principal.getName();
-        List<JobApplicationResponse> history = jobApplicationService.getHistoryByCandidate(userEmail);
-        return ResponseEntity.ok(history);
+        return ResponseEntity.ok(jobApplicationService.getHistoryByCandidate(principal.getName()));
     }
 
+    @Operation(summary = "Postulaciones por oferta", description = "Devuelve todas las aplicaciones recibidas para una oferta en particular.")
     @GetMapping("/by-offer/{offerId}")
     public ResponseEntity<List<JobApplicationResponse>> getApplicationsByOffer(@PathVariable Long offerId) {
-        List<JobApplicationResponse> history = jobApplicationService.getHistoryByOffer(offerId);
-        return ResponseEntity.ok(history);
+        return ResponseEntity.ok(jobApplicationService.getHistoryByOffer(offerId));
     }
 
+    @Operation(summary = "Ranking de candidatos", description = "Devuelve las postulaciones de una oferta ordenadas de mayor a menor según el Match Score de la IA.")
     @GetMapping("/{jobOfferId}/ranking")
     public ResponseEntity<List<JobApplicationResponse>> getRanking(@PathVariable Long jobOfferId){
         return new ResponseEntity<>(jobApplicationService.getRankingMoreCompatibility(jobOfferId), HttpStatus.OK);
     }
 
+    @Operation(summary = "Disparar análisis de IA", description = "Ejecuta el LLM para contrastar el perfil del candidato, extraer texto de su PDF y calcular la compatibilidad (Match Score).")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Análisis completado exitosamente"),
+            @ApiResponse(responseCode = "500", description = "Error de comunicación con Groq/OpenAI")
+    })
     @PatchMapping("/{id}/analyze-difference")
-    public ResponseEntity<JobApplicationResponse> analyzeDifference(@PathVariable Long id) {
+    public ResponseEntity<JobApplicationResponse> analyzeDifference(@Parameter(description = "ID de la postulación") @PathVariable Long id) {
         return new ResponseEntity<>(analysisService.analizeDifference(id), HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/upload-cv")
+    @Operation(summary = "Subir Currículum en PDF", description = "Carga y almacena localmente el archivo PDF con el CV del candidato para esta postulación específica.")
+    @PostMapping(value = "/{id}/upload-cv", consumes = "multipart/form-data")
     public ResponseEntity<JobApplicationResponse> uploadCv(
-            @PathVariable Long id,
-            @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+            @Parameter(description = "ID de la postulación") @PathVariable Long id,
+            @Parameter(description = "Archivo PDF del currículum") @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
             Principal principal) {
         JobApplicationResponse response = jobApplicationService.uploadCv(id, file, principal.getName());
         return ResponseEntity.ok(response);

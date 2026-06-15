@@ -40,7 +40,7 @@ public class UserEntity implements UserDetails {
     private UserRole role;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, columnDefinition = "varchar(30) default 'ACTIVE'")
     private UserStatus status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
