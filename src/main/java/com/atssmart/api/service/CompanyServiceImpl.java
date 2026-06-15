@@ -27,6 +27,7 @@ public class CompanyServiceImpl implements CompanyService{
     private final CompanyMapper companyMapper;
 
     @Transactional
+    @Override
     public CompanyResponse create(CompanyRequest request) {
             if (companyRepository.existsByNameIgnoreCase(request.getName())) {
             throw new IllegalArgumentException("Ya existe una compania con el nombre: " + request.getName());
