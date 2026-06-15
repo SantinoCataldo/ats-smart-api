@@ -1,5 +1,6 @@
 package com.atssmart.api.controller;
 
+import com.atssmart.api.service.AnalysisService;
 import org.springframework.web.bind.annotation.*;
 
 import com.atssmart.api.dto.request.JobApplicationRequest;
@@ -22,6 +23,7 @@ import java.util.List;
 public class JobApplicationController {
 
     private final JobApplicationService jobApplicationService;
+    private final AnalysisService analysisService;
 
     @PostMapping
     public ResponseEntity<JobApplicationResponse> apply(
@@ -58,4 +60,8 @@ public class JobApplicationController {
         return new ResponseEntity<>(jobApplicationService.getRankingMoreCompatibility(jobOfferId), HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}/analyze-difference")
+    public ResponseEntity<JobApplicationResponse> analyzeDifference(@PathVariable Long id) {
+        return new ResponseEntity<>(analysisService.analizeDifference(id), HttpStatus.OK);
+    }
 }
