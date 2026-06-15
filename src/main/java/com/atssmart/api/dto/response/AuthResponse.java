@@ -1,5 +1,5 @@
 package com.atssmart.api.dto.response;
 
-public record AuthResponse(String token) {
+public record AuthResponse(String accessToken, String refreshToken) {
 
 }
