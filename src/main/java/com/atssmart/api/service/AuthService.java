@@ -1,15 +1,20 @@
 package com.atssmart.api.service;
 
 import com.atssmart.api.dto.request.AuthRequest;
+import com.atssmart.api.dto.request.RegisterRequest;
 import com.atssmart.api.dto.response.AuthResponse;
-import com.atssmart.api.model.CredentialsEntity;
+import com.atssmart.api.enums.UserRole;
+import com.atssmart.api.model.CandidateProfileEntity;
+import com.atssmart.api.model.RecruiterProfileEntity;
+import com.atssmart.api.model.UserEntity;
 import com.atssmart.api.repository.UserRepository;
 import com.atssmart.api.securityJwt.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException; // Importante
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +25,34 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
+    @Transactional
+    public void register(RegisterRequest request) {
+        if (userRepository.findUserEntityByEmail(request.email()).isPresent()) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
+
+        UserEntity user = UserEntity.builder()
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .role(request.role())
+                .build();
+
+        if (request.role() == UserRole.ROLE_CANDIDATE) {
+            CandidateProfileEntity profile = new CandidateProfileEntity();
+            profile.setFullName(request.fullName());
+            profile.setUserEntity(user);
+            user.setCandidateProfile(profile);
+        } else if (request.role() == UserRole.ROLE_RECRUITER) {
+            RecruiterProfileEntity profile = new RecruiterProfileEntity();
+            profile.setFullName(request.fullName());
+            profile.setUserEntity(user);
+            user.setRecruiterProfile(profile);
+        }
+
+        userRepository.save(user);
+    }
 
     public UserDetails authenticate(AuthRequest input) {
         authenticationManager.authenticate(
