@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
@@ -28,6 +29,7 @@ public class JobApplicationController {
     private final AnalysisService analysisService;
 
     @Operation(summary = "Aplicar a oferta", description = "Genera una nueva postulación para el candidato autenticado hacia una oferta específica.")
+    @PreAuthorize("hasRole('CANDIDATE')")
     @PostMapping
     public ResponseEntity<JobApplicationResponse> apply(
             @Valid @RequestBody JobApplicationRequest request,
@@ -37,6 +39,7 @@ public class JobApplicationController {
     }
 
     @Operation(summary = "Actualizar estado de postulación", description = "Cambia el estado de una postulación (Ej. de PENDIENTE a EN_REVISION).")
+    @PreAuthorize("hasRole('RECRUITER')")
     @PutMapping("/{id}/status")
     public ResponseEntity<JobApplicationResponse> updateStatus(
             @Parameter(description = "ID de la postulación") @PathVariable Long id,
@@ -46,18 +49,21 @@ public class JobApplicationController {
     }
 
     @Operation(summary = "Mis postulaciones", description = "Devuelve el historial de todas las aplicaciones realizadas por el candidato autenticado.")
+    @PreAuthorize("hasRole('CANDIDATE')")
     @GetMapping("/my-applications")
     public ResponseEntity<List<JobApplicationResponse>> getMyApplications(Principal principal) {
         return ResponseEntity.ok(jobApplicationService.getHistoryByCandidate(principal.getName()));
     }
 
     @Operation(summary = "Postulaciones por oferta", description = "Devuelve todas las aplicaciones recibidas para una oferta en particular.")
+    @PreAuthorize("hasRole('RECRUITER')")
     @GetMapping("/by-offer/{offerId}")
     public ResponseEntity<List<JobApplicationResponse>> getApplicationsByOffer(@PathVariable Long offerId) {
         return ResponseEntity.ok(jobApplicationService.getHistoryByOffer(offerId));
     }
 
     @Operation(summary = "Ranking de candidatos", description = "Devuelve las postulaciones de una oferta ordenadas de mayor a menor según el Match Score de la IA.")
+    @PreAuthorize("hasRole('RECRUITER')")
     @GetMapping("/{jobOfferId}/ranking")
     public ResponseEntity<List<JobApplicationResponse>> getRanking(@PathVariable Long jobOfferId){
         return new ResponseEntity<>(jobApplicationService.getRankingMoreCompatibility(jobOfferId), HttpStatus.OK);
@@ -67,13 +73,16 @@ public class JobApplicationController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Análisis completado exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error de comunicación con Groq/OpenAI")
+
     })
+    @PreAuthorize("hasRole('RECRUITER')")
     @PatchMapping("/{id}/analyze-difference")
     public ResponseEntity<JobApplicationResponse> analyzeDifference(@Parameter(description = "ID de la postulación") @PathVariable Long id) {
         return new ResponseEntity<>(analysisService.analizeDifference(id), HttpStatus.OK);
     }
 
     @Operation(summary = "Subir Currículum en PDF", description = "Carga y almacena localmente el archivo PDF con el CV del candidato para esta postulación específica.")
+    @PreAuthorize("hasRole('CANDIDATE')")
     @PostMapping(value = "/{id}/upload-cv", consumes = "multipart/form-data")
     public ResponseEntity<JobApplicationResponse> uploadCv(
             @Parameter(description = "ID de la postulación") @PathVariable Long id,

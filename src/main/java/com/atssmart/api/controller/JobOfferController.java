@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
@@ -30,6 +31,8 @@ public class JobOfferController {
             @ApiResponse(responseCode = "201", description = "Oferta creada exitosamente"),
             @ApiResponse(responseCode = "403", description = "No tiene permisos para realizar esta acción")
     })
+
+    @PreAuthorize("hasRole('RECRUITER')")
     @PostMapping
     public ResponseEntity<JobOfferResponse> create(@Valid @RequestBody JobOfferRequest request, Principal principal) {
         JobOfferResponse response = jobOfferService.create(request, principal.getName());
@@ -37,6 +40,7 @@ public class JobOfferController {
     }
 
     @Operation(summary = "Actualizar oferta laboral", description = "Modifica los datos de una oferta existente por su ID.")
+    @PreAuthorize("hasRole('RECRUITER')")
     @PutMapping("/{id}")
     public ResponseEntity<JobOfferResponse> update(@Parameter(description = "ID de la oferta") @PathVariable Long id,
                                                    @Valid @RequestBody JobOfferRequest request, Principal principal) {
@@ -52,6 +56,7 @@ public class JobOfferController {
     }
 
     @Operation(summary = "Eliminar oferta", description = "Elimina físicamente una oferta laboral del sistema.")
+    @PreAuthorize("hasRole('RECRUITER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@Parameter(description = "ID de la oferta") @PathVariable Long id, Principal principal) {
         jobOfferService.delete(id, principal.getName());

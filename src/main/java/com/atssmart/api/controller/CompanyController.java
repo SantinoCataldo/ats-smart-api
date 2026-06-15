@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +29,16 @@ public class CompanyController {
             @ApiResponse(responseCode = "201", description = "Empresa registrada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Nombre corporativo duplicado o URLs con formato inválido")
     })
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     @PostMapping
     public ResponseEntity<CompanyResponse> create(@Valid @RequestBody CompanyRequest request){
         return new ResponseEntity<>(companyService.create(request), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Modificar datos corporativos", description = "Actualiza la descripción, sitio web o enlace del logotipo de la organización por su ID.")
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     @PutMapping("/{id}")
     public ResponseEntity<CompanyResponse> update(@Parameter(description = "ID único de la empresa") @PathVariable Long id,
                                                   @Valid @RequestBody CompanyRequest request){

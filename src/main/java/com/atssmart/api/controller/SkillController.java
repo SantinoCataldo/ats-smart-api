@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,8 @@ public class SkillController {
             @ApiResponse(responseCode = "201", description = "Habilidad registrada de forma exitosa"),
             @ApiResponse(responseCode = "400", description = "Ya existe una habilidad registrada con el mismo nombre")
     })
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<SkillResponse> create(@Valid @RequestBody SkillRequest request){
         return new ResponseEntity<>(skillService.create(request), HttpStatus.CREATED);
@@ -56,6 +59,7 @@ public class SkillController {
     }
 
     @Operation(summary = "Modificar una habilidad", description = "Actualiza el nombre descriptivo o la categoría de una habilidad del catálogo existente.")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<SkillResponse> update(@Parameter(description = "ID de la habilidad a modificar") @PathVariable Long id,
                                                 @Valid @RequestBody SkillRequest request){
@@ -63,6 +67,7 @@ public class SkillController {
     }
 
     @Operation(summary = "Eliminar una habilidad", description = "Remueve permanentemente del catálogo general una habilidad específica.")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@Parameter(description = "ID de la habilidad a dar de baja") @PathVariable Long id){
         skillService.delete(id);

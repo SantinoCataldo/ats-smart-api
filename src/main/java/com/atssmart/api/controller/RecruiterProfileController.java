@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +29,16 @@ public class RecruiterProfileController {
             @ApiResponse(responseCode = "201", description = "Perfil asociado con éxito"),
             @ApiResponse(responseCode = "400", description = "El identificador de usuario seleccionado ya cuenta con un perfil de reclutador activo")
     })
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     @PostMapping
     public ResponseEntity<RecruiterProfileResponse> create(@Valid @RequestBody RecruiterProfileRequest request){
         return new ResponseEntity<>(recruiterProfileService.create(request), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Actualizar perfil de reclutador", description = "Modifica los datos personales o cambia la empresa asociada del reclutador.")
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     @PutMapping("/{id}")
     public ResponseEntity<RecruiterProfileResponse> update(@Parameter(description = "ID del perfil de reclutador") @PathVariable Long id,
                                                            @Valid @RequestBody RecruiterProfileRequest request){
@@ -41,6 +46,8 @@ public class RecruiterProfileController {
     }
 
     @Operation(summary = "Dar de baja perfil de reclutador", description = "Elimina físicamente el perfil administrativo de un reclutador del sistema.")
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@Parameter(description = "ID del perfil de reclutador") @PathVariable Long id){
         recruiterProfileService.delete(id);
