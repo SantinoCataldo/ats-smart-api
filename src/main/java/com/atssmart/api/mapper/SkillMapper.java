@@ -11,9 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class SkillMapper {
 
-    /**
-     * Converts a SkillRequest DTO into a Skill JPA entity.
-     */
     public SkillEntity toEntity(SkillRequest request) {
         SkillEntity skill = new SkillEntity();
         skill.setName(request.getName());
@@ -21,9 +18,6 @@ public class SkillMapper {
         return skill;
     }
 
-    /**
-     * Converts a Skill JPA entity into a SkillResponse DTO.
-     */
     public SkillResponse toResponse(SkillEntity skill) {
         return new SkillResponse(
                 skill.getId(),
