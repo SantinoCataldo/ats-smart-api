@@ -99,7 +99,11 @@ public class JobOfferServiceImpl implements JobOfferService {
     @Override
     @Transactional(readOnly = true)
     public List<JobOfferResponse> search(String title, String sector, String location, JobOfferModality modality, List<Long> skillIds) {
-        List<JobOfferEntity> offers = jobOfferRepository.searchOffers(title, sector, location, modality, skillIds);
+        String titleParam = (title != null && !title.trim().isEmpty()) ? "%" + title.trim().toLowerCase() + "%" : null;
+        String sectorParam = (sector != null && !sector.trim().isEmpty()) ? sector.trim().toLowerCase() : null;
+        String locationParam = (location != null && !location.trim().isEmpty()) ? "%" + location.trim().toLowerCase() + "%" : null;
+
+        List<JobOfferEntity> offers = jobOfferRepository.searchOffers(titleParam, sectorParam, locationParam, modality, skillIds);
         return offers.stream()
                 .map(jobOfferMapper::toResponse)
                 .toList();

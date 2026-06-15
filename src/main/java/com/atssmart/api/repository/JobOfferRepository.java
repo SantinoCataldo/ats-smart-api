@@ -17,11 +17,11 @@ public interface JobOfferRepository extends JpaRepository<JobOfferEntity, Long> 
 
     @Query("SELECT DISTINCT j FROM JobOfferEntity j LEFT JOIN j.requiredSkills s " +
            "WHERE j.status = 'ACTIVE' " +
-           "AND (:title IS NULL OR LOWER(j.title) LIKE LOWER(CONCAT('%', :title, '%'))) " +
-           "AND (:sector IS NULL OR LOWER(j.sector) = LOWER(:sector)) " +
-           "AND (:location IS NULL OR LOWER(j.location) LIKE LOWER(CONCAT('%', :location, '%'))) " +
+           "AND (:title IS NULL OR LOWER(j.title) LIKE :title) " +
+           "AND (:sector IS NULL OR LOWER(j.sector) = :sector) " +
+           "AND (:location IS NULL OR LOWER(j.location) LIKE :location) " +
            "AND (:modality IS NULL OR j.modality = :modality) " +
-           "AND (COALESCE(:skillIds, NULL) IS NULL OR s.id IN :skillIds)")
+           "AND (:skillIds IS NULL OR s.id IN :skillIds)")
     List<JobOfferEntity> searchOffers(
         @Param("title") String title,
         @Param("sector") String sector,
