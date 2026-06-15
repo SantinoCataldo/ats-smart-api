@@ -4,6 +4,7 @@ import com.atssmart.api.dto.request.AuthRequest;
 import com.atssmart.api.dto.request.RegisterRequest;
 import com.atssmart.api.dto.response.AuthResponse;
 import com.atssmart.api.enums.UserRole;
+import com.atssmart.api.enums.UserStatus;
 import com.atssmart.api.model.CandidateProfileEntity;
 import com.atssmart.api.model.RecruiterProfileEntity;
 import com.atssmart.api.model.UserEntity;
@@ -37,6 +38,7 @@ public class AuthService {
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .role(request.role())
+                .status(UserStatus.ACTIVE) //
                 .build();
 
         if (request.role() == UserRole.ROLE_CANDIDATE) {

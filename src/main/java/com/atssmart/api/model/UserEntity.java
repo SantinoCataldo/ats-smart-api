@@ -1,6 +1,7 @@
 package com.atssmart.api.model;
 
 import com.atssmart.api.enums.UserRole;
+import com.atssmart.api.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,6 +39,10 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false, length = 30)
     private UserRole role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private UserStatus status;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -57,6 +62,9 @@ public class UserEntity implements UserDetails {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = UserStatus.ACTIVE;
+        }
     }
 
     @Override
@@ -86,12 +94,12 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return this.status != UserStatus.BLOCKED;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.status == UserStatus.ACTIVE;
     }
 
 }
