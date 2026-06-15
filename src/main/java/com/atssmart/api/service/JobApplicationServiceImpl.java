@@ -85,6 +85,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .toList();
     }
 
+    @Override
+    @Transactional
     public List<JobApplicationResponse> getRankingMoreCompatibility(Long jobOfferId) {
         if (!jobOfferRepository.existsById(jobOfferId)) {
             throw new ResourceNotFoundException("JobOffer", "id", jobOfferId);
