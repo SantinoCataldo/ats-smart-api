@@ -84,4 +84,13 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .map(jobApplicationMapper::toResponse)
                 .toList();
     }
+
+    public List<JobApplicationResponse> getRankingMoreCompatibility(Long jobOfferId) {
+        if (!jobOfferRepository.existsById(jobOfferId)) {
+            throw new ResourceNotFoundException("JobOffer", "id", jobOfferId);
+        }
+        List<JobApplicationEntity> jobAplications = jobApplicationRepository.findByJobOfferIdOrderByMatchScoreDesc(jobOfferId);
+
+        return jobAplications.stream().map(jobApplicationMapper::toResponse).toList();
+    }
 }

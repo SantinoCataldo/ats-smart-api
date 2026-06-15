@@ -52,4 +52,10 @@ public class JobApplicationController {
         List<JobApplicationResponse> history = jobApplicationService.getHistoryByOffer(offerId);
         return ResponseEntity.ok(history);
     }
+
+    @GetMapping("/{jobOfferId}/ranking")
+    public ResponseEntity<List<JobApplicationResponse>> getRanking(@PathVariable Long jobOfferId){
+        return new ResponseEntity<>(jobApplicationService.getRankingMoreCompatibility(jobOfferId), HttpStatus.OK);
+    }
+
 }

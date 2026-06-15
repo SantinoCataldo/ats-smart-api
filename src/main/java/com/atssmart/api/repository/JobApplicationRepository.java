@@ -14,4 +14,5 @@ public interface JobApplicationRepository extends JpaRepository<JobApplicationEn
     boolean existsByApplicantIdAndJobOfferId(Long applicantId, Long jobOfferId);
     List<JobApplicationEntity> findByApplicantUserEntityEmail(String email);
     List<JobApplicationEntity> findByJobOfferId(Long jobOfferId);
+    List<JobApplicationEntity> findByJobOfferIdOrderByMatchScoreDesc(Long jobOfferId);
 }

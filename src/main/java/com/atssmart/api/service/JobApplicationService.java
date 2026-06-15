@@ -13,4 +13,5 @@ public interface JobApplicationService {
     JobApplicationResponse updateStatus(Long id, ApplicationStatus status);
     List<JobApplicationResponse> getHistoryByCandidate(String userEmail);
     List<JobApplicationResponse> getHistoryByOffer(Long jobOfferId);
+    List<JobApplicationResponse> getRankingMoreCompatibility(Long jobOfferId);
 }
