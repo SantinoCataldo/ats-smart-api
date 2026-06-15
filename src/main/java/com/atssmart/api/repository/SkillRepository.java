@@ -15,5 +15,7 @@ public interface SkillRepository extends JpaRepository<SkillEntity, Long> {
 
     boolean existsByNameIgnoreCase(String name);
 
+    java.util.Optional<SkillEntity> findByNameIgnoreCase(String name);
+
     List<SkillEntity> findByCategory(SkillCategory category);
 }
