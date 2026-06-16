@@ -11,14 +11,19 @@ import java.util.Set;
  * Entity representing a Candidate's Application to a Job Offer.
  */
 @Entity
-@Table(name = "job_applications")
-@Data
+@Table(name = "job_applications", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"candidate_profile_id", "job_offer_id"})
+})
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class JobApplicationEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

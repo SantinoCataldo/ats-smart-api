@@ -67,13 +67,13 @@ public class RecruiterProfileServiceImpl implements RecruiterProfileService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<RecruiterProfileResponse> getAll(){
         return recruiterProfileRepository.findAll().stream().map(recruiterProfileMapper::toResponse).toList();
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public RecruiterProfileResponse getById(Long id){
         RecruiterProfileEntity recruiter = recruiterProfileRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recruiter", "id", id));
