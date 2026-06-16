@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -24,25 +25,20 @@ import java.util.List;
 public class CompanyController {
     private final CompanyService companyService;
 
-    @Operation(summary = "Registrar una nueva empresa", description = "Añade una organización corporativa a la base de datos central asegurando un nombre único.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Empresa registrada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Nombre corporativo duplicado o URLs con formato inválido")
-    })
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
+    @Operation(summary = "Registrar una nueva empresa", description = "Añade una organización corporativa a la base de datos central.")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CompanyResponse> create(@Valid @RequestBody CompanyRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(companyService.create(request));
     }
 
-    @Operation(summary = "Modificar datos corporativos", description = "Actualiza la descripción, sitio web o enlace del logotipo de la organización por su ID.")
-
+    @Operation(summary = "Modificar datos corporativos", description = "Actualiza la descripción, sitio web o enlace del logotipo.")
     @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     @PutMapping("/{id}")
     public ResponseEntity<CompanyResponse> update(@Parameter(description = "ID único de la empresa") @PathVariable Long id,
-                                                  @Valid @RequestBody CompanyRequest request){
-        return ResponseEntity.ok(companyService.update(id, request));
+                                                  @Valid @RequestBody CompanyRequest request,
+                                                  Principal principal){
+        return ResponseEntity.ok(companyService.update(id, request, principal.getName()));
     }
 
     @Operation(summary = "Obtener detalle corporativo", description = "Devuelve toda la información pública disponible de una empresa por ID.")

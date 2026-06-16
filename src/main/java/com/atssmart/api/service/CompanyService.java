@@ -9,6 +9,6 @@ public interface CompanyService {
     CompanyResponse create(CompanyRequest request);
     CompanyResponse getById(Long id);
     List<CompanyResponse> getAll();
-    CompanyResponse update(Long id, CompanyRequest request);
+    CompanyResponse update(Long id, CompanyRequest request, String userEmail);
     public void delete(Long id);
 }
