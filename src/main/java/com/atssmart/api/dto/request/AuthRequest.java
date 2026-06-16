@@ -12,7 +12,7 @@ public class AuthRequest {
     @NotNull(message = "El email debe ser obligatorio")
     private String email;
 
-    @NotNull(message = "El email debe ser obligatorio")
+    @NotNull(message = "La contraseña es obligatoria")
     private String password;
 
 

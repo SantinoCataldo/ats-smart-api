@@ -7,8 +7,8 @@ import com.atssmart.api.model.JobApplicationEntity;
 import com.atssmart.api.model.SkillEntity;
 import com.atssmart.api.repository.JobApplicationRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +20,9 @@ import java.util.stream.Collectors;
  * Service implementation for candidate application analysis.
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AnalysisServiceImpl implements AnalysisService {
+    private static final int IDENTITY_DISCREPANCY_MAX_SCORE = 10;
     private final JobApplicationRepository jobApplicationRepository;
     private final JobApplicationMapper jobApplicationMapper;
     private final ChatModel chatModel;
@@ -29,9 +30,9 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Transactional
     @Override
-    public JobApplicationResponse analizeDifference(Long JobApplicationId) {
-        JobApplicationEntity jobApplication = jobApplicationRepository.findById(JobApplicationId)
-                .orElseThrow(() -> new ResourceNotFoundException("Job Application", "id", JobApplicationId));
+    public JobApplicationResponse analizeDifference(Long jobApplicationId) {
+        JobApplicationEntity jobApplication = jobApplicationRepository.findById(jobApplicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Postulación", "id", jobApplicationId));
 
         Set<SkillEntity> jobOfferSkills = jobApplication.getJobOffer().getRequiredSkills();
         Set<SkillEntity> applicantSkills = jobApplication.getApplicant().getSkills();
@@ -64,7 +65,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         String missingSkillsStr = missingSkills.stream()
                 .map(SkillEntity::getName)
                 .collect(Collectors.joining(", "));
-        
+
         String cvText = "No se ha subido un CV en formato PDF.";
         String cvPath = app.getCvLink();
         if (cvPath == null || cvPath.isEmpty()) {
@@ -103,7 +104,7 @@ public class AnalysisServiceImpl implements AnalysisService {
                 
                 INSTRUCCIONES DE RESPUESTA Y VERIFICACIÓN DE IDENTIDAD:
                 1. Compara el nombre del candidato indicado en la sección "CANDIDATO" (Nombre: %s) con el nombre que figura al inicio del texto extraído de su currículum PDF.
-                2. Si los nombres son sustancialmente diferentes (por ejemplo, pertenecen a personas completamente distintas y no son variaciones del mismo nombre), debes incluir OBLIGATORIAMENTE al inicio del campo "aiFeedback" la siguiente advertencia exacta: "[ALERTA: DISCREPANCIA DE IDENTIDAD - El currículum pertenece a otra persona: <Nombre detectado en PDF>]". En este caso, penaliza drásticamente el "matchScore" asignándole un máximo de 10 puntos.
+                2. Si los nombres son sustancialmente diferentes (por ejemplo, pertenecen a personas completamente distintas y no son variaciones del mismo nombre), debes incluir OBLIGATORIAMENTE al inicio del campo "aiFeedback" la siguiente advertencia exacta: "[ALERTA: DISCREPANCIA DE IDENTIDAD - El currículum pertenece a otra persona: <Nombre detectado en PDF>]". En este caso, penaliza drásticamente el "matchScore" asignándole un máximo de %d puntos.
                 3. Debes responder estrictamente con un objeto JSON válido que contenga exactamente estos dos campos:
                    - "matchScore": Un número entero del 0 al 100 que indique el porcentaje de compatibilidad de habilidades técnicas, seniority y experiencia deducida del currículum (aplicando la penalización si hay discrepancia de nombre).
                    - "aiFeedback": Un comentario breve en español (máximo 400 caracteres) explicando el motivo técnico del score asignado, fortalezas del candidato y lo que le falta (incluyendo la alerta al inicio si corresponde).
@@ -118,7 +119,8 @@ public class AnalysisServiceImpl implements AnalysisService {
                 candidateSkillsStr.isEmpty() ? "Ninguna" : candidateSkillsStr,
                 missingSkillsStr.isEmpty() ? "Ninguna, posee todas las habilidades" : missingSkillsStr,
                 cvText,
-                app.getApplicant().getFullName()
+                app.getApplicant().getFullName(),
+                IDENTITY_DISCREPANCY_MAX_SCORE
         );
     }
 

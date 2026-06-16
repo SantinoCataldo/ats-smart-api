@@ -49,7 +49,7 @@ public class AuthController {
     })
     @SecurityRequirements()
     @PostMapping()
-    public ResponseEntity<AuthResponse> authenticateUser(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody AuthRequest authRequest) {
         UserDetails userDetails = authService.authenticate(authRequest);
         String accessToken = jwtService.generateToken(userDetails);
         String refreshToken = jwtService.generateRefreshToken(userDetails);
