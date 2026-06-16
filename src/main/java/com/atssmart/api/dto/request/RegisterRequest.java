@@ -1,12 +1,14 @@
 package com.atssmart.api.dto.request;
 
 import com.atssmart.api.enums.UserRole;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record RegisterRequest(
         @NotBlank(message = "El email es obligatorio")
+        @Email(message = "El formato de mail no es correcto")
         String email,
 
         @NotBlank(message = "La password es obligatoria")
