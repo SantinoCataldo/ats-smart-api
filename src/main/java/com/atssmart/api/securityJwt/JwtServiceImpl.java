@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +28,14 @@ public class JwtServiceImpl implements JwtService {
 
     @Value("${jwt.refresh.expiration:604800000}")
     private Long refreshTokenExpiration;
+
+    private SecretKey signInKey;
+
+    @PostConstruct
+    public void init() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
+        this.signInKey = Keys.hmacShaKeyFor(keyBytes);
+    }
 
     @Override
     public String extractUsername(String token) {
@@ -84,8 +93,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private SecretKey getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return this.signInKey;
     }
 
     private boolean isTokenExpired(String token) {

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 public class SkillMapper {
 
     public SkillEntity toEntity(SkillRequest request) {
+        if (request == null) {
+            return null;
+        }
         SkillEntity skill = new SkillEntity();
         skill.setName(request.getName());
         skill.setCategory(request.getCategory());
@@ -19,6 +22,9 @@ public class SkillMapper {
     }
 
     public SkillResponse toResponse(SkillEntity skill) {
+        if (skill == null) {
+            return null;
+        }
         return new SkillResponse(
                 skill.getId(),
                 skill.getName(),

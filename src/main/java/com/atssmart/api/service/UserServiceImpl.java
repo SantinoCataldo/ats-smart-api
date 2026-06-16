@@ -7,7 +7,7 @@ import com.atssmart.api.exception.ResourceNotFoundException;
 import com.atssmart.api.mapper.UserMapper;
 import com.atssmart.api.model.UserEntity;
 import com.atssmart.api.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -68,15 +68,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse getById(Long id){
-        UserEntity userr = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company", "id", id));
-        return userMapper.toResponse(userr);
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuario", "id", id));
+        return userMapper.toResponse(user);
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Recruiter", "id", id);
+            throw new ResourceNotFoundException("Usuario", "id", id);
         }
         userRepository.deleteById(id);
     }

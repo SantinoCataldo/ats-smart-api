@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
     public UserResponse toResponse(UserEntity entity) {
+        if (entity == null) {
+            return null;
+        }
         UserResponse Userresponse = new UserResponse();
         Userresponse.setId(entity.getId());
         Userresponse.setEmail(entity.getEmail());

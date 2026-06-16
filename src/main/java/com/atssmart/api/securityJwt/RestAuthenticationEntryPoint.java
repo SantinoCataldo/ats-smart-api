@@ -28,14 +28,14 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         String errorMessage = switch (authException) {
-            case BadCredentialsException e -> "Invalid credentials";
-            case DisabledException e -> "Account disabled";
-            case LockedException e -> "Account locked";
-            case AccountExpiredException e -> "Account expired";
-            case CredentialsExpiredException e -> "Credentials expired";
-            case InsufficientAuthenticationException e -> "Insufficient authentication status";
-            case AuthenticationServiceException e -> "Authentication service error";
-            default -> "Authentication error: " + authException.getMessage();
+            case BadCredentialsException e -> "Credenciales inválidas";
+            case DisabledException e -> "Cuenta deshabilitada";
+            case LockedException e -> "Cuenta bloqueada";
+            case AccountExpiredException e -> "Cuenta expirada";
+            case CredentialsExpiredException e -> "Credenciales expiradas";
+            case InsufficientAuthenticationException e -> "Estado de autenticación insuficiente (Falta token de acceso)";
+            case AuthenticationServiceException e -> "Error del servicio de autenticación";
+            default -> "Error de autenticación: " + authException.getMessage();
         };
         Map<String, Object> errorBody = new LinkedHashMap<>();
         errorBody.put("status", HttpStatus.UNAUTHORIZED.value());

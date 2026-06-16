@@ -2,6 +2,7 @@ package com.atssmart.api.config;
 
 import com.atssmart.api.securityJwt.JwtAuthenticationFilter;
 import com.atssmart.api.securityJwt.RestAuthenticationEntryPoint;
+import com.atssmart.api.securityJwt.RestAccessDeniedHandler;
 import com.atssmart.api.service.UserDetailServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +21,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -29,6 +33,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     private final RestAuthenticationEntryPoint authenticationEntryPoint;
+    private final RestAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
@@ -40,6 +45,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
@@ -53,6 +59,18 @@ public class SecurityConfig {
                 .build();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
+        configuration.setExposedHeaders(List.of("Authorization"));
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

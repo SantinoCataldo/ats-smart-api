@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 public class CompanyMapper {
 
     public CompanyEntity toEntity(CompanyRequest request) {
+        if (request == null) {
+            return null;
+        }
         CompanyEntity company = new CompanyEntity();
         company.setName(request.getName());
         company.setDescription(request.getDescription());
@@ -23,6 +26,9 @@ public class CompanyMapper {
     }
 
     public CompanyResponse toResponse(CompanyEntity company) {
+        if (company == null) {
+            return null;
+        }
         return new CompanyResponse(
                 company.getId(),
                 company.getName(),

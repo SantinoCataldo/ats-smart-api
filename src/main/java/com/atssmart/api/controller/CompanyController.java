@@ -33,7 +33,7 @@ public class CompanyController {
     @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     @PostMapping
     public ResponseEntity<CompanyResponse> create(@Valid @RequestBody CompanyRequest request){
-        return new ResponseEntity<>(companyService.create(request), HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(companyService.create(request));
     }
 
     @Operation(summary = "Modificar datos corporativos", description = "Actualiza la descripción, sitio web o enlace del logotipo de la organización por su ID.")
@@ -42,18 +42,18 @@ public class CompanyController {
     @PutMapping("/{id}")
     public ResponseEntity<CompanyResponse> update(@Parameter(description = "ID único de la empresa") @PathVariable Long id,
                                                   @Valid @RequestBody CompanyRequest request){
-        return new ResponseEntity<>(companyService.update(id, request), HttpStatus.OK);
+        return ResponseEntity.ok(companyService.update(id, request));
     }
 
     @Operation(summary = "Obtener detalle corporativo", description = "Devuelve toda la información pública disponible de una empresa por ID.")
     @GetMapping("/{id}")
     public ResponseEntity<CompanyResponse> getById(@Parameter(description = "ID único de la empresa") @PathVariable Long id){
-        return new ResponseEntity<>(companyService.getById(id), HttpStatus.OK);
+        return ResponseEntity.ok(companyService.getById(id));
     }
 
     @Operation(summary = "Listar todas las empresas", description = "Devuelve el catálogo de empresas registradas completo en el ecosistema de empleo.")
     @GetMapping
     public ResponseEntity<List<CompanyResponse>> getAll(){
-        return new ResponseEntity<>(companyService.getAll(), HttpStatus.OK);
+        return ResponseEntity.ok(companyService.getAll());
     }
 }

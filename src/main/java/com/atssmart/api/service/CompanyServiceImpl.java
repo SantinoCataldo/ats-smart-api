@@ -1,25 +1,18 @@
 package com.atssmart.api.service;
 
 import com.atssmart.api.dto.request.CompanyRequest;
-import com.atssmart.api.dto.request.SkillRequest;
 import com.atssmart.api.dto.response.CompanyResponse;
-import com.atssmart.api.dto.response.SkillResponse;
 import com.atssmart.api.exception.ResourceNotFoundException;
 import com.atssmart.api.mapper.CompanyMapper;
-import com.atssmart.api.mapper.SkillMapper;
 import com.atssmart.api.model.CompanyEntity;
-import com.atssmart.api.model.SkillEntity;
 import com.atssmart.api.repository.CompanyRepository;
-import com.atssmart.api.repository.SkillRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.naming.CompositeName;
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class CompanyServiceImpl implements CompanyService{
 
@@ -58,13 +51,13 @@ public class CompanyServiceImpl implements CompanyService{
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CompanyResponse> getAll(){
         return companyRepository.findAll().stream().map(companyMapper::toResponse).toList();
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public CompanyResponse getById(Long id){
         CompanyEntity company = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company", "id", id));
         return companyMapper.toResponse(company);
@@ -74,7 +67,7 @@ public class CompanyServiceImpl implements CompanyService{
     @Transactional
     public void delete(Long id) {
         if (!companyRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Recruiter", "id", id);
+            throw new ResourceNotFoundException("Empresa", "id", id);
         }
         companyRepository.deleteById(id);
     }

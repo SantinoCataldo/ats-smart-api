@@ -10,7 +10,7 @@ import com.atssmart.api.model.RecruiterProfileEntity;
 import com.atssmart.api.model.UserEntity;
 import com.atssmart.api.repository.UserRepository;
 import com.atssmart.api.securityJwt.JwtService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class AuthService {
 
