@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface JobApplicationService {
     JobApplicationResponse apply(JobApplicationRequest request, String userEmail);
-    JobApplicationResponse updateStatus(Long id, ApplicationStatus status);
+    JobApplicationResponse updateStatus(Long id, ApplicationStatus status,String userEmail);
     List<JobApplicationResponse> getHistoryByCandidate(String userEmail);
     List<JobApplicationResponse> getHistoryByOffer(Long jobOfferId);
     List<JobApplicationResponse> getRankingMoreCompatibility(Long jobOfferId);

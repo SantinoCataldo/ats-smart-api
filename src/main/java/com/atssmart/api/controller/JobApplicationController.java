@@ -43,8 +43,8 @@ public class JobApplicationController {
     @PutMapping("/{id}/status")
     public ResponseEntity<JobApplicationResponse> updateStatus(
             @Parameter(description = "ID de la postulación") @PathVariable Long id,
-            @Parameter(description = "Nuevo estado de la aplicación") @RequestParam ApplicationStatus status) {
-        JobApplicationResponse response = jobApplicationService.updateStatus(id, status);
+            @Parameter(description = "Nuevo estado de la aplicación") @RequestParam ApplicationStatus status,Principal principal) {
+        JobApplicationResponse response = jobApplicationService.updateStatus(id, status,principal.getName());
         return ResponseEntity.ok(response);
     }
 

@@ -57,10 +57,17 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     @Override
     @Transactional
-    public JobApplicationResponse updateStatus(Long id, ApplicationStatus status) {
+    public JobApplicationResponse updateStatus(Long id, ApplicationStatus status,String userEmail) {
         JobApplicationEntity application = jobApplicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Postulación", "id", id));
-        
+
+
+        JobOfferEntity offer = application.getJobOffer();
+        if (!offer.getRecruiter().getUserEntity().getEmail().equalsIgnoreCase(userEmail)) {
+            throw new IllegalArgumentException("no estas habilitado am odificar esta postulacion");
+        }
+
+
         application.setStatus(status);
         JobApplicationEntity updated = jobApplicationRepository.save(application);
         return jobApplicationMapper.toResponse(updated);
