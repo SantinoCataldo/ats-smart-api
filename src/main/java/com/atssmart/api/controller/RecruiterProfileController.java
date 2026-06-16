@@ -38,12 +38,12 @@ public class RecruiterProfileController {
     }
 
     @Operation(summary = "Actualizar perfil de reclutador", description = "Modifica los datos personales o cambia la empresa asociada del reclutador.")
-
     @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     @PutMapping("/{id}")
     public ResponseEntity<RecruiterProfileResponse> update(@Parameter(description = "ID del perfil de reclutador") @PathVariable Long id,
-                                                           @Valid @RequestBody RecruiterProfileRequest request){
-        return new ResponseEntity<>(recruiterProfileService.update(id, request), HttpStatus.OK);
+                                                           @Valid @RequestBody RecruiterProfileRequest request,
+                                                           Principal principal){
+        return new ResponseEntity<>(recruiterProfileService.update(id, request, principal.getName()), HttpStatus.OK);
     }
 
     @Operation(summary = "Dar de baja perfil de reclutador", description = "Elimina físicamente el perfil administrativo de un reclutador del sistema.")

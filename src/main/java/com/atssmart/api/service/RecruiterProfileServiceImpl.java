@@ -3,6 +3,7 @@ package com.atssmart.api.service;
 
 import com.atssmart.api.dto.request.RecruiterProfileRequest;
 import com.atssmart.api.dto.response.RecruiterProfileResponse;
+import com.atssmart.api.enums.UserRole;
 import com.atssmart.api.exception.ResourceNotFoundException;
 import com.atssmart.api.mapper.RecruiterProfileMapper;
 import com.atssmart.api.model.CompanyEntity;
@@ -49,18 +50,26 @@ public class RecruiterProfileServiceImpl implements RecruiterProfileService{
 
     @Override
     @Transactional
-    public RecruiterProfileResponse update(Long id,RecruiterProfileRequest request){
+    public RecruiterProfileResponse update(Long id, RecruiterProfileRequest request, String email){
         RecruiterProfileEntity recruiter = recruiterProfileRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recruiter", "id", id));
+
+        UserEntity currentUser = userRepository.findUserEntityByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+
+
+        if (currentUser.getRole() == UserRole.ROLE_RECRUITER) {
+            if (recruiter.getUserEntity() == null || !recruiter.getUserEntity().getId().equals(currentUser.getId())) {
+                throw new IllegalArgumentException("Acceso denegado: No puedes editar el perfil de otro reclutador.");
+            }
+        }
 
         CompanyEntity company = companyRepository.findById(request.getCompanyId())
                 .orElseThrow(() -> new ResourceNotFoundException("Company", "id", request.getCompanyId()));
 
-
         recruiter.setFullName(request.getFullName());
         recruiter.setCompanyRole(request.getCompanyRole());
         recruiter.setCompany(company);
-
 
         RecruiterProfileEntity updated = recruiterProfileRepository.save(recruiter);
         return recruiterProfileMapper.toResponse(updated);

@@ -9,7 +9,7 @@ public interface RecruiterProfileService {
     RecruiterProfileResponse create(RecruiterProfileRequest request);
     RecruiterProfileResponse getById(Long id);
     List<RecruiterProfileResponse> getAll();
-    RecruiterProfileResponse update(Long id, RecruiterProfileRequest request);
+    RecruiterProfileResponse update(Long id, RecruiterProfileRequest request, String email);
     void delete(Long id);
     RecruiterProfileResponse getProfile(String email);
     RecruiterProfileResponse updateProfile(RecruiterProfileRequest request, String email);
