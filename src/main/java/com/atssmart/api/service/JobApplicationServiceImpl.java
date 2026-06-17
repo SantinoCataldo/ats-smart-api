@@ -57,7 +57,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     @Override
     @Transactional
-    public JobApplicationResponse updateStatus(Long id, ApplicationStatus status,String userEmail) {
+    public JobApplicationResponse updateStatus(Long id, ApplicationStatus status, String userEmail) {
         JobApplicationEntity application = jobApplicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Postulación", "id", id));
 
@@ -83,10 +83,14 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<JobApplicationResponse> getHistoryByOffer(Long jobOfferId) {
-        if (!jobOfferRepository.existsById(jobOfferId)) {
-            throw new ResourceNotFoundException("Oferta laboral", "id", jobOfferId);
+    public List<JobApplicationResponse> getHistoryByOffer(Long jobOfferId, String userEmail) {
+        JobOfferEntity offer = jobOfferRepository.findById(jobOfferId)
+                .orElseThrow(() -> new ResourceNotFoundException("Oferta laboral", "id", jobOfferId));
+
+        if (!offer.getRecruiter().getUserEntity().getEmail().equalsIgnoreCase(userEmail)) {
+            throw new IllegalArgumentException("No tienes permiso para ver las postulaciones de esta oferta laboral");
         }
+
         return jobApplicationRepository.findByJobOfferId(jobOfferId).stream()
                 .map(jobApplicationMapper::toResponse)
                 .toList();

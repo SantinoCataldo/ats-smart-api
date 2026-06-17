@@ -58,8 +58,8 @@ public class JobApplicationController {
     @Operation(summary = "Postulaciones por oferta", description = "Devuelve todas las aplicaciones recibidas para una oferta en particular.")
     @PreAuthorize("hasRole('RECRUITER')")
     @GetMapping("/by-offer/{offerId}")
-    public ResponseEntity<List<JobApplicationResponse>> getApplicationsByOffer(@PathVariable Long offerId) {
-        return ResponseEntity.ok(jobApplicationService.getHistoryByOffer(offerId));
+    public ResponseEntity<List<JobApplicationResponse>> getApplicationsByOffer(@PathVariable Long offerId, Principal principal) {
+        return ResponseEntity.ok(jobApplicationService.getHistoryByOffer(offerId, principal.getName()));
     }
 
     @Operation(summary = "Ranking de candidatos", description = "Devuelve las postulaciones de una oferta ordenadas de mayor a menor según el Match Score de la IA.")
@@ -77,8 +77,8 @@ public class JobApplicationController {
     })
     @PreAuthorize("hasRole('RECRUITER')")
     @PatchMapping("/{id}/analyze-difference")
-    public ResponseEntity<JobApplicationResponse> analyzeDifference(@Parameter(description = "ID de la postulación") @PathVariable Long id) {
-        return new ResponseEntity<>(analysisService.analizeDifference(id), HttpStatus.OK);
+    public ResponseEntity<JobApplicationResponse> analyzeDifference(@Parameter(description = "ID de la postulación") @PathVariable Long id, Principal principal) {
+        return new ResponseEntity<>(analysisService.analizeDifference(id, principal.getName()), HttpStatus.OK);
     }
 
     @Operation(summary = "Subir Currículum en PDF", description = "Carga y almacena localmente el archivo PDF con el CV del candidato para esta postulación específica.")

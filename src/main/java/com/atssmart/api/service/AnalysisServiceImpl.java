@@ -30,9 +30,13 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Transactional
     @Override
-    public JobApplicationResponse analizeDifference(Long jobApplicationId) {
+    public JobApplicationResponse analizeDifference(Long jobApplicationId, String userEmail) {
         JobApplicationEntity jobApplication = jobApplicationRepository.findById(jobApplicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Postulación", "id", jobApplicationId));
+
+        if (!jobApplication.getJobOffer().getRecruiter().getUserEntity().getEmail().equalsIgnoreCase(userEmail)) {
+            throw new IllegalArgumentException("No tienes permiso para analizar esta postulación");
+        }
 
         Set<SkillEntity> jobOfferSkills = jobApplication.getJobOffer().getRequiredSkills();
         Set<SkillEntity> applicantSkills = jobApplication.getApplicant().getSkills();
