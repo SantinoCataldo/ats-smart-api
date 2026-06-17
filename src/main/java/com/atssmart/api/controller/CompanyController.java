@@ -26,7 +26,7 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @Operation(summary = "Registrar una nueva empresa", description = "Añade una organización corporativa a la base de datos central.")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'RECRUITER')")
     @PostMapping
     public ResponseEntity<CompanyResponse> create(@Valid @RequestBody CompanyRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(companyService.create(request));
