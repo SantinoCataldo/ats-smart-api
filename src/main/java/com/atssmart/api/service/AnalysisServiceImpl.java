@@ -34,15 +34,7 @@ public class AnalysisServiceImpl implements AnalysisService {
         JobApplicationEntity jobApplication = jobApplicationRepository.findById(jobApplicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Postulación", "id", jobApplicationId));
 
-        if (!jobApplication.getJobOffer().getRecruiter().getUserEntity().getEmail().equalsIgnoreCase(userEmail)) {
-            throw new IllegalArgumentException("No tienes permiso para analizar esta postulación");
-        }
-
-        Set<SkillEntity> jobOfferSkills = jobApplication.getJobOffer().getRequiredSkills();
-        Set<SkillEntity> applicantSkills = jobApplication.getApplicant().getSkills();
-
-        Set<SkillEntity> missing = new HashSet<>(jobOfferSkills);
-        missing.removeAll(applicantSkills);
+        Set<SkillEntity> missing = getSkillEntities(userEmail, jobApplication);
         jobApplication.setMissingSkills(missing);
 
         String prompt = buildPrompt(jobApplication, missing);
@@ -57,6 +49,19 @@ public class AnalysisServiceImpl implements AnalysisService {
         }
 
         return jobApplicationMapper.toResponse(jobApplicationRepository.save(jobApplication));
+    }
+
+    private static Set<SkillEntity> getSkillEntities(String userEmail, JobApplicationEntity jobApplication) {
+        if (!jobApplication.getJobOffer().getRecruiter().getUserEntity().getEmail().equalsIgnoreCase(userEmail)) {
+            throw new IllegalArgumentException("No tienes permiso para analizar esta postulación");
+        }
+
+        Set<SkillEntity> jobOfferSkills = jobApplication.getJobOffer().getRequiredSkills();
+        Set<SkillEntity> applicantSkills = jobApplication.getApplicant().getSkills();
+
+        Set<SkillEntity> missing = new HashSet<>(jobOfferSkills);
+        missing.removeAll(applicantSkills);
+        return missing;
     }
 
     private String buildPrompt(JobApplicationEntity app, Set<SkillEntity> missingSkills) {
@@ -142,7 +147,6 @@ public class AnalysisServiceImpl implements AnalysisService {
         return objectMapper.readValue(cleaned, AiResponse.class);
     }
 
-    private record AiResponse(Integer matchScore, String aiFeedback) {
-    }
+    private record AiResponse(Integer matchScore, String aiFeedback) {}
 }
 
