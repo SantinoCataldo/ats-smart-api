@@ -2,9 +2,12 @@ package com.atssmart.api.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -113,5 +116,24 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleAccessDeniedException(AccessDeniedException ex) {
+        return new ErrorResponse(
+                HttpStatus.FORBIDDEN.value(),
+                "Acceso denegado: No tienes permisos suficientes",
+                LocalDateTime.now()
+        );
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleBadCredentialsException(BadCredentialsException ex) {
+        return new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Credenciales inválidas",
+                LocalDateTime.now()
+        );
     }
 }
